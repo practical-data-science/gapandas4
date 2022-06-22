@@ -40,5 +40,14 @@ df = gp.run_report(service_account, request)
 print(df.head())
 ```
 
+#### `get_metadata()`
+The `get_metadata()` function will return all metadata on dimensions and metrics within the Google Analytics 4 property. 
+
+```python
+metadata = gp.get_metadata(service_account, property_id)
+print(metadata)
+```
+
 ### Current features
 - `DateRange`, `Dimension`, `Metric`, `OrderBy`, `Filter`, `FilterExpression`, and `FilterExpressionList` all work with `RunReportRequest` via `run_report()`. However, `MetricAggregation` is not implemented as it's so easy to calculate the total, maximum, and minimum of a column in Pandas itself.
+- `get_metadata()` will return all metadata for the Google Analytics 4 property. 
