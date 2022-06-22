@@ -1,0 +1,4 @@
+venv
+.idea
+example.py
+client_secrets.json
