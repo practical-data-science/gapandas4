@@ -12,9 +12,10 @@ pip3 install git+https://github.com/practical-data-science/gapandas4.git
 ```
 
 ### Usage
-GAPandas4 has been written to allow you to use as little code as possible. Unlike the previous version of GAPandas for Universal Analytics, which used a payload based on a Python dictionary, GAPandas4 now uses a Protobuf (Protocol Buffer) payload as used in the API itself. 
+GAPandas4 has been written to allow you to use as little code as possible. Unlike the previous version of GAPandas for Universal Analytics, which used a payload based on a Python dictionary, GAPandas4 now uses a Protobuf (Protocol Buffer) payload as used in the API itself. Providing there's data in your Google Analytics 4 property, the below query should return a Pandas dataframe of your data. 
 
-Providing there's data in your Google Analytics 4 property, the below query should return a Pandas dataframe of your data. Further usage examples can be found in this post: [How to query the Google Analytics Data API for GA4 using Python
+#### `run_report()`
+The `run_report()` function is used for running regular reports and queries. It takes a `service_account` filepath and a Protobuf request. Further usage examples for `run_report()` can be found in this post: [How to query the Google Analytics Data API for GA4 using Python
 ](https://practicaldatascience.co.uk/data-science/how-to-query-the-google-analytics-data-api-for-ga4-with-python) 
 
 ```python
