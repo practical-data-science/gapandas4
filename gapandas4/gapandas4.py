@@ -158,5 +158,5 @@ def get_metadata(service_account, property_id):
             "Custom definition": metric.custom_definition
         })
 
-    return pd.DataFrame(metadata).sort_values(by=['Type', 'API Name'])
+    return pd.DataFrame(metadata).sort_values(by=['Type', 'API Name']).drop_duplicates()
 
