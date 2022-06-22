@@ -1,4 +1,5 @@
 from .gapandas4 import run_report
+from .gapandas4 import get_metadata
 
 from google.analytics.data_v1beta.types import DateRange
 from google.analytics.data_v1beta.types import Dimension
