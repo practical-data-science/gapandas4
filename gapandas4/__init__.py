@@ -7,6 +7,5 @@ from google.analytics.data_v1beta.types import OrderBy
 from google.analytics.data_v1beta.types import Filter
 from google.analytics.data_v1beta.types import FilterExpression
 from google.analytics.data_v1beta.types import FilterExpressionList
-from google.analytics.data_v1beta.types import MetricType
 from google.analytics.data_v1beta.types import RunReportRequest
 

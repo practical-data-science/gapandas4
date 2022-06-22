@@ -14,7 +14,8 @@ pip3 install git+https://github.com/practical-data-science/gapandas4.git
 ### Usage
 GAPandas4 has been written to allow you to use as little code as possible. Unlike the previous version of GAPandas for Universal Analytics, which used a payload based on a Python dictionary, GAPandas4 now uses a Protobuf (Protocol Buffer) payload as used in the API itself. 
 
-Providing there's data in your Google Analytics 4 property, the below query should return a Pandas dataframe of your data. 
+Providing there's data in your Google Analytics 4 property, the below query should return a Pandas dataframe of your data. Further usage examples can be found in this post: [How to query the Google Analytics Data API for GA4 using Python
+](https://practicaldatascience.co.uk/data-science/how-to-query-the-google-analytics-data-api-for-ga4-with-python) 
 
 ```python
 import gapandas4 as gp
@@ -38,3 +39,5 @@ df = gp.run_report(service_account, request)
 print(df.head())
 ```
 
+### Current features
+- `DateRange`, `Dimension`, `Metric`, `OrderBy`, `Filter`, `FilterExpression`, and `FilterExpressionList` all work with `RunReportRequest` via `run_report()`. However, `MetricAggregation` is not implemented as it's so easy to calculate the total, maximum, and minimum of a column in Pandas itself.
