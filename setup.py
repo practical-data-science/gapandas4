@@ -8,7 +8,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name='gapandas4',
     packages=['gapandas4'],
-    version='0.001',
+    version='0.003',
     license='MIT',
     description='GAPandas4 is a Python package for accessing the Google Analytics Data API for GA4 using Pandas',
     long_description=long_description,
