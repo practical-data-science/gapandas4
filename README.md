@@ -12,19 +12,20 @@ pip3 install git+https://github.com/practical-data-science/gapandas4.git
 ```
 
 ### Usage
-GAPandas4 has been written to allow you to use as little code as possible. Unlike the previous version of GAPandas for Universal Analytics, which used a payload based on a Python dictionary, GAPandas4 now uses a Protobuf (Protocol Buffer) payload as used in the API itself. Providing there's data in your Google Analytics 4 property, the below query should return a Pandas dataframe of your data. 
+GAPandas4 has been written to allow you to use as little code as possible. Unlike the previous version of GAPandas for Universal Analytics, which used a payload based on a Python dictionary, GAPandas4 now uses a Protobuf (Protocol Buffer) payload as used in the API itself. 
 
-#### `run_report()`
-The `run_report()` function is used for running regular reports and queries. It takes a `service_account` filepath and a Protobuf request. Further usage examples for `run_report()` can be found in this post: [How to query the Google Analytics Data API for GA4 using Python
-](https://practicaldatascience.co.uk/data-science/how-to-query-the-google-analytics-data-api-for-ga4-with-python) 
+### Report
+The `query()` function is used to send a protobug API payload to the API. The function supports various report types 
+via the `report_type` argument. Standard reports are handled using `report_type="report"`, but this is also the 
+default. Data are returned as a Pandas dataframe. 
 
 ```python
 import gapandas4 as gp
 
 service_account = 'client_secrets.json'
-property_id = '123456789'
+property_id = 'xxxxxxxxx'
 
-request = gp.RunReportRequest(
+report_request = gp.RunReportRequest(
     property=f"properties/{property_id}",
     dimensions=[
         gp.Dimension(name="country"),
@@ -36,11 +37,171 @@ request = gp.RunReportRequest(
     date_ranges=[gp.DateRange(start_date="2022-06-01", end_date="2022-06-01")],
 )
 
-df = gp.run_report(service_account, request)
+df = gp.query(service_account, report_request, report_type="report")
 print(df.head())
 ```
 
-#### `get_metadata()`
+### Batch report
+If you construct a protobuf payload using `BatchRunReportsRequest()` you can pass up to five requests at once. These 
+are returned as a list of Pandas dataframes, so will need to access them using their index. 
+
+```python
+import gapandas4 as gp
+
+service_account = 'client_secrets.json'
+property_id = 'xxxxxxxxx'
+
+
+batch_report_request = gp.BatchRunReportsRequest(
+    property=f"properties/{property_id}",
+    requests=[
+        gp.RunReportRequest(
+            dimensions=[
+                gp.Dimension(name="country"),
+                gp.Dimension(name="city")
+            ],
+            metrics=[
+                gp.Metric(name="activeUsers")
+            ],
+            date_ranges=[gp.DateRange(start_date="2022-06-01", end_date="2022-06-01")]
+        ),
+        gp.RunReportRequest(
+            dimensions=[
+                gp.Dimension(name="country"),
+                gp.Dimension(name="city")
+            ],
+            metrics=[
+                gp.Metric(name="activeUsers")
+            ],
+            date_ranges=[gp.DateRange(start_date="2022-06-02", end_date="2022-06-02")]
+        )
+    ]
+)
+
+df = gp.query(service_account, batch_report_request, report_type="batch_report")
+print(df[0].head())
+print(df[1].head())
+```
+
+### Pivot report
+Constructing a report using `RunPivotReportRequest()` will return pivoted data in a single Pandas dataframe. 
+
+```python
+import gapandas4 as gp
+
+service_account = 'client_secrets.json'
+property_id = 'xxxxxxxxx'
+
+pivot_request = gp.RunPivotReportRequest(
+    property=f"properties/{property_id}",
+    dimensions=[gp.Dimension(name="country"),
+                gp.Dimension(name="browser")],
+    metrics=[gp.Metric(name="sessions")],
+    date_ranges=[gp.DateRange(start_date="2022-05-30", end_date="today")],
+    pivots=[
+        gp.Pivot(
+            field_names=["country"],
+            limit=5,
+            order_bys=[
+                gp.OrderBy(
+                    dimension=gp.OrderBy.DimensionOrderBy(dimension_name="country")
+                )
+            ],
+        ),
+        gp.Pivot(
+            field_names=["browser"],
+            offset=0,
+            limit=5,
+            order_bys=[
+                gp.OrderBy(
+                    metric=gp.OrderBy.MetricOrderBy(metric_name="sessions"), desc=True
+                )
+            ],
+        ),
+    ],
+)
+
+df = gp.query(service_account, pivot_request, report_type="pivot")
+print(df.head())
+```
+
+### Batch pivot report
+Constructing a payload using `BatchRunPivotReportsRequest()` will allow you to run up to five pivot reports. These 
+are returned as a list of Pandas dataframes. 
+
+```python
+import gapandas4 as gp
+
+service_account = 'client_secrets.json'
+property_id = 'xxxxxxxxx'
+
+batch_pivot_request = gp.BatchRunPivotReportsRequest(
+    property=f"properties/{property_id}",
+    requests=[
+        gp.RunPivotReportRequest(
+            dimensions=[gp.Dimension(name="country"),
+                        gp.Dimension(name="browser")],
+                metrics=[gp.Metric(name="sessions")],
+                date_ranges=[gp.DateRange(start_date="2022-05-30", end_date="today")],
+                pivots=[
+                    gp.Pivot(
+                        field_names=["country"],
+                        limit=5,
+                        order_bys=[
+                            gp.OrderBy(
+                                dimension=gp.OrderBy.DimensionOrderBy(dimension_name="country")
+                            )
+                        ],
+                    ),
+                    gp.Pivot(
+                        field_names=["browser"],
+                        offset=0,
+                        limit=5,
+                        order_bys=[
+                            gp.OrderBy(
+                                metric=gp.OrderBy.MetricOrderBy(metric_name="sessions"), desc=True
+                            )
+                        ],
+                    ),
+                ],
+        ),
+        gp.RunPivotReportRequest(
+            dimensions=[gp.Dimension(name="country"),
+                        gp.Dimension(name="browser")],
+                metrics=[gp.Metric(name="sessions")],
+                date_ranges=[gp.DateRange(start_date="2022-05-30", end_date="today")],
+                pivots=[
+                    gp.Pivot(
+                        field_names=["country"],
+                        limit=5,
+                        order_bys=[
+                            gp.OrderBy(
+                                dimension=gp.OrderBy.DimensionOrderBy(dimension_name="country")
+                            )
+                        ],
+                    ),
+                    gp.Pivot(
+                        field_names=["browser"],
+                        offset=0,
+                        limit=5,
+                        order_bys=[
+                            gp.OrderBy(
+                                metric=gp.OrderBy.MetricOrderBy(metric_name="sessions"), desc=True
+                            )
+                        ],
+                    ),
+                ],
+        )
+    ]
+)
+
+df = gp.query(service_account, batch_pivot_request, report_type="batch_pivot")
+print(df[0].head())
+print(df[1].head())
+
+```
+
+#### Metadata
 The `get_metadata()` function will return all metadata on dimensions and metrics within the Google Analytics 4 property. 
 
 ```python
@@ -49,5 +210,6 @@ print(metadata)
 ```
 
 ### Current features
-- `DateRange`, `Dimension`, `Metric`, `OrderBy`, `Filter`, `FilterExpression`, and `FilterExpressionList` all work with `RunReportRequest` via `run_report()`. However, `MetricAggregation` is not implemented as it's so easy to calculate the total, maximum, and minimum of a column in Pandas itself.
-- `get_metadata()` will return all metadata for the Google Analytics 4 property. 
+- Support for all current API functionality including `RunReportRequest`, `BatchRunReportsRequest`,
+  `RunPivotReportRequest`,  `BatchRunPivotReportsRequest`, `RunRealtimeReportRequest`, and `GetMetadataRequest`. 
+- Returns data in a Pandas dataframe, or a list of Pandas dataframes. 
