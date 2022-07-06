@@ -1,0 +1,11 @@
+LICENSE.txt
+README.md
+setup.cfg
+setup.py
+gapandas4/__init__.py
+gapandas4/gapandas4.py
+gapandas4.egg-info/PKG-INFO
+gapandas4.egg-info/SOURCES.txt
+gapandas4.egg-info/dependency_links.txt
+gapandas4.egg-info/requires.txt
+gapandas4.egg-info/top_level.txt

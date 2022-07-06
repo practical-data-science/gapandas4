@@ -5,16 +5,17 @@ GAPandas4 is a Python package for querying the Google Analytics Data API for GA4
 In order to use GAPandas4 you will first need to [create a Google Service Account](https://practicaldatascience.co.uk/data-engineering/how-to-create-a-google-service-account-client-secrets-json-key) with access to the Google Analytics Data API and export a client secrets JSON keyfile to use for authentication. You'll also need to add the service account email address as a user on the Google Analytics 4 property you wish to access, and you'll need to note the property ID to use in your queries.  
 
 ### Installation
-As this is currently in alpha, there's currently no Pip package, however, you can install the code into your Python environment directly from GitHub using the command below. It will run fine in a Jupyter notebook, a Python IDE, or a Python script. 
+You can install GAPandas4 in two ways: via GitHub or via PyPi using the Pip Python package management system. 
 
 ```commandline
 pip3 install git+https://github.com/practical-data-science/gapandas4.git
+pip3 install gapandas4
 ```
 
-### Usage
+### Usage examples
 GAPandas4 has been written to allow you to use as little code as possible. Unlike the previous version of GAPandas for Universal Analytics, which used a payload based on a Python dictionary, GAPandas4 now uses a Protobuf (Protocol Buffer) payload as used in the API itself. 
 
-### Report
+#### Report
 The `query()` function is used to send a protobug API payload to the API. The function supports various report types 
 via the `report_type` argument. Standard reports are handled using `report_type="report"`, but this is also the 
 default. Data are returned as a Pandas dataframe. 
@@ -41,7 +42,7 @@ df = gp.query(service_account, report_request, report_type="report")
 print(df.head())
 ```
 
-### Batch report
+#### Batch report
 If you construct a protobuf payload using `BatchRunReportsRequest()` you can pass up to five requests at once. These 
 are returned as a list of Pandas dataframes, so will need to access them using their index. 
 
@@ -83,7 +84,7 @@ print(df[0].head())
 print(df[1].head())
 ```
 
-### Pivot report
+#### Pivot report
 Constructing a report using `RunPivotReportRequest()` will return pivoted data in a single Pandas dataframe. 
 
 ```python
@@ -125,7 +126,7 @@ df = gp.query(service_account, pivot_request, report_type="pivot")
 print(df.head())
 ```
 
-### Batch pivot report
+#### Batch pivot report
 Constructing a payload using `BatchRunPivotReportsRequest()` will allow you to run up to five pivot reports. These 
 are returned as a list of Pandas dataframes. 
 
